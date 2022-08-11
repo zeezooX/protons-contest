@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.secret_key = "whatever lol"
 
 
@@ -10,6 +11,12 @@ app.secret_key = "whatever lol"
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.errorhandler(413)
+def too_large(e):
+    flash("❌ File Too Large")
+    return redirect(url_for('upload'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -40,7 +47,8 @@ def upload():
             flash("❌ File Type Not Python")
             return redirect(url_for('upload'))
 
-        uploaded_file.save(os.path.join('submissions', f"{len(os.listdir('submissions'))}_{teams[int(team)]}_{problems[int(problem)]}.py"))
+        uploaded_file.save(os.path.join(
+            'submissions', f"{len(os.listdir('submissions'))}_{teams[int(team)]}_{problems[int(problem)]}.py"))
         flash("✅ Solution Submitted Successfully")
         return redirect(url_for('upload'))
 
@@ -48,4 +56,4 @@ def upload():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=80)
