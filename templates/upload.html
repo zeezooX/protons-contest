@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>Protons Contest</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename = 'bootstrap.min.css') }}"
+    />
+    <script src="{{ url_for('static', filename = 'jquery-3.2.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap.min.js') }}"></script>
+  </head>
+
+  {# get_flashed_messages() is auto sent to the template with the flash() call
+  #} {% for mess in get_flashed_messages() %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <button
+      type="button"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+      class="fade close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+    {{mess}}
+  </div>
+  {% endfor %}
+
+  <body style="margin: 5">
+    <h1>
+      <img
+        src="{{ url_for('static', filename = 'favicon.ico') }}"
+        alt="Protons"
+      /><b>Protons Contest</b>
+    </h1>
+    <form
+      action="http://localhost:5000/"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <label for="team">Team: </label>
+      <select name="team" id="team" autocomplete="off">
+        <option value="" selected hidden>Select Team</option>
+        {%for i in range(0, n)%}
+        <option value="{{i}}">{{teams[i]}}</option>
+        {%endfor%}
+      </select>
+
+      <br />
+
+      <label for="problem">Problem: </label>
+      <select name="problem" id="problem" autocomplete="off">
+        <option value="" selected hidden>Select Problem</option>
+        {%for i in range(0, m)%}
+        <option value="{{i}}">{{problems[i]}}</option>
+        {%endfor%}
+      </select>
+
+      <br />
+
+      <label for="file">Solution: </label>
+      <input type="file" name="file" id="file" />
+
+      <br />
+
+      <input type="submit" value="Submit" />
+      <input type="reset" />
+    </form>
+  </body>
+</html>
