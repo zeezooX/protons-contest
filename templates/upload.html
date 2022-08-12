@@ -1,72 +1,163 @@
 <html>
   <head>
-    <title>Protons Contest</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Programming Mid-Track Contest</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
     <link
       rel="stylesheet"
       type="text/css"
       href="{{ url_for('static', filename = 'bootstrap.min.css') }}"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename = 'icons/bootstrap-icons.css') }}"
+    />
     <script src="{{ url_for('static', filename = 'jquery-3.2.1.slim.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'bootstrap.min.js') }}"></script>
+    <style>
+      @font-face {
+        font-family: Poppins;
+        src: url("{{ url_for('static', filename = 'Poppins-Regular.ttf') }}");
+      }
+      @font-face {
+        font-family: Poppins;
+        src: url("{{ url_for('static', filename = 'Poppins-Bold.ttf') }}");
+        font-weight: bold;
+      }
+      body {
+        font-family: Poppins;
+      }
+    </style>
   </head>
 
-  {# get_flashed_messages() is auto sent to the template with the flash() call
-  #} {% for mess in get_flashed_messages() %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <button
-      type="button"
-      class="close"
-      data-dismiss="alert"
-      aria-label="Close"
-      class="fade close"
+  <body
+    style="
+      background-image: url('/static/background.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+    "
+  >
+    {% for mess in get_flashed_messages() %}
+    <div
+      class="alert alert-secondary alert-dismissible fade show"
+      role="alert"
+      style="
+        z-index: 1000;
+        margin: 0;
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+      "
     >
-      <span aria-hidden="true">&times;</span>
-    </button>
-    {{mess}}
-  </div>
-  {% endfor %}
+      <button
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+        class="fade close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{mess}}
+    </div>
+    {% endfor %}
 
-  <body style="margin: 5">
-    <h1>
+    <div
+      style="
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+      "
+    >
       <img
-        src="{{ url_for('static', filename = 'favicon.ico') }}"
+        src="{{ url_for('static', filename = 'logo.png') }}"
         alt="Protons"
-      /><b>Protons Contest</b>
-    </h1>
-    <form
-      action="/"
-      method="POST"
-      enctype="multipart/form-data"
-    >
-      <label for="team">Team: </label>
-      <select name="team" id="team" autocomplete="off">
-        <option value="" selected hidden>Select Team</option>
-        {%for i in range(0, n)%}
-        <option value="{{i}}">{{teams[i]}}</option>
-        {%endfor%}
-      </select>
+        style="width: 300px; height: 50px; background-color: white"
+      />
+      <h1>
+        <b>Programming Mid-Track Contest</b>
+      </h1>
+      <form action="/" method="POST" enctype="multipart/form-data">
+        <a class="btn btn-warning" href="pset.pdf" role="button" style="width: 150px"
+          ><i class="bi-box-arrow-up-left"></i> Problem Set</a
+        >
+        <a
+          class="btn btn-info"
+          href="scoreboard"
+          role="button"
+          style="position: absolute; right: 0px; width: 200px"
+          >Scoreboard <i class="bi-arrow-bar-right"></i
+        ></a>
 
-      <br />
+        <br /><br />
 
-      <label for="problem">Problem: </label>
-      <select name="problem" id="problem" autocomplete="off">
-        <option value="" selected hidden>Select Problem</option>
-        {%for i in range(0, m)%}
-        <option value="{{i}}">{{problems[i]}}</option>
-        {%endfor%}
-      </select>
+        <label for="team">Team: </label>
+        <select
+          class="form-select"
+          name="team"
+          id="team"
+          autocomplete="off"
+          style="position: absolute; right: 0px; width: 200px"
+        >
+          <option value="" selected hidden>Select Team</option>
+          {%for i in range(0, n)%}
+          <option value="{{i}}">{{teams[i]}}</option>
+          {%endfor%}
+        </select>
 
-      <br />
+        <br />
 
-      <label for="file">Solution: </label>
-      <input type="file" name="file" id="file" />
+        <label for="problem">Problem: </label>
+        <select
+          class="form-select"
+          name="problem"
+          id="problem"
+          autocomplete="off"
+          style="position: absolute; right: 0px; width: 200px"
+        >
+          <option value="" selected hidden>Select Problem</option>
+          {%for i in range(0, m)%}
+          <option value="{{i}}">{{problems[i]}}</option>
+          {%endfor%}
+        </select>
 
-      <br />
+        <br />
 
-      <input type="submit" value="Submit" />
-      <input type="reset" />
-    </form>
+        <label for="file">Solution: </label>
+        <input
+          class="form-control"
+          type="file"
+          name="file"
+          id="file"
+          accept=".py"
+        />
+
+        <br />
+        <button type="reset" class="btn btn-warning" style="width: 150px">
+          <i class="bi-arrow-repeat"></i> Reset
+        </button>
+        <button
+          type="submit"
+          class="btn btn-info"
+          value="Submit"
+          style="position: absolute; right: 0px; width: 200px"
+        >
+          Submit <i class="bi-upload"></i>
+        </button>
+      </form>
+    </div>
   </body>
 </html>
