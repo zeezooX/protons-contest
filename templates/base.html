@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>Programming Mid-Track Contest</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename = 'bootstrap.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename = 'icons/bootstrap-icons.css') }}"
+    />
+    <script src="{{ url_for('static', filename = 'jquery-3.2.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap.min.js') }}"></script>
+    <style>
+      @font-face {
+        font-family: Poppins;
+        src: url("{{ url_for('static', filename = 'Poppins-Regular.ttf') }}");
+      }
+      @font-face {
+        font-family: Poppins;
+        src: url("{{ url_for('static', filename = 'Poppins-Bold.ttf') }}");
+        font-weight: bold;
+      }
+      body {
+        font-family: Poppins;
+      }
+    </style>
+  </head>
+
+  <body
+    style="
+      background-image: url('/static/background.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+    "
+  >
+    {% block main %} {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,20 @@
+<table id="table1" class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      {%for i in range(0, n)%}
+      <th scope="col">{{headers[i]}}</th>
+      {%endfor%}
+    </tr>
+  </thead>
+  <tbody>
+    {%for i in range(0, m)%}
+    <tr>
+      <th scope="row">{{i + 1}}</th>
+      {%for j in range(0, n)%}
+      <td>{{table[i][j]}}</td>
+      {%endfor%}
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>

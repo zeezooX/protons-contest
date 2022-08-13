@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block main %}
+<head>
+  <script type="module">
+    import * as Turbo from "/static/turbo.js";
+    Turbo.connectStreamSource(
+      new WebSocket(
+        `ws${location.protocol.substring(4)}//${location.host}/turbo-stream`
+      )
+    );
+  </script>
+</head>
+<div
+  style="
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 75%;
+  "
+>
+  {% include "table.html" %}
+</div>
+{% endblock %}

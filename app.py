@@ -1,17 +1,26 @@
-import os
-import time
-import webbrowser
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, send_file
-from werkzeug.utils import secure_filename
+from email import header
+from posixpath import split
 import threading
+from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, send_file
+import webbrowser
+import time
+import os
+import mimetypes
+from turbo_flask import Turbo
+
+mimetypes.add_type('application/javascript', '.js')
 
 app = Flask(__name__)
+turbo = Turbo(app)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.secret_key = "whatever lol"
 
 teams = []
 problems = []
 timeline = []
+headers = []
+table = [[]]
 
 
 @app.route('/favicon.ico')
@@ -28,14 +37,14 @@ def too_large(e):
 
 @app.route('/pset.pdf', methods=['GET', 'POST'])
 def pset():
-    if timeline and timeline[0] == "start":
+    if timeline and timeline[0] != "yet":
         return send_file('static/pset.pdf', attachment_filename='pset.pdf')
     return '<h1 style="font-family: sans-serif"><b>❌ Contest Hasn\'t Started Yet</b></h1>'
 
 
 @app.route('/scoreboard', methods=['GET', 'POST'])
 def scoreboard():
-    return "wip"
+    return render_template("scoreboard.html", n=len(headers), headers=headers, m=len(teams), table=table)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -72,15 +81,58 @@ def upload():
 
 
 def updateData():
-    while True:
-        global teams, problems, timeline
-        teams = open("data/teams.txt", "r").read().splitlines()
-        problems = open("data/problems.txt", "r").read().splitlines()
-        timeline = open("data/timeline.txt", "r").read().splitlines()
-        time.sleep(5)
+    with app.app_context():
+        while True:
+            global teams, problems, timeline, table, headers
+
+            teams = open("data/teams.txt", "r").read().splitlines()
+            problems = open("data/problems.txt", "r").read().splitlines()
+            timeline = open("data/timeline.txt", "r").read().splitlines()
+            table = [([0 for i in range(3)] + ["w" for i in range(len(problems))])
+                     for j in range(len(teams))]
+
+            for event in timeline:
+                f_event = event.split("_")
+                if len(f_event) != 3:
+                    continue
+                table[teams.index(f_event[1])][3 +
+                                               problems.index(f_event[2])] = "y"
+                if f_event[2].find("(Hard)") != -1:
+                    table[teams.index(f_event[1])][1] += 20
+                elif f_event[2].find("(Medium)") != -1:
+                    table[teams.index(f_event[1])][1] += 10
+                else:
+                    table[teams.index(f_event[1])][1] += 5
+            for filename in os.listdir("submissions"):
+                f_filename = filename[:-3].split("_")
+                if len(f_filename) != 3:
+                    continue
+                if table[teams.index(f_filename[1])][3 + problems.index(f_filename[2])] != "y":
+                    table[teams.index(f_filename[1])][3 +
+                                                      problems.index(f_filename[2])] = "p"
+            for i in range(len(teams)):
+                table[i][0] = teams[i]
+                if table[i][1] >= 75:
+                    table[i][2] = 4
+                elif table[i][1] >= 50:
+                    table[i][2] = 3
+                elif table[i][1] >= 30:
+                    table[i][2] = 2
+                elif table[i][1] >= 15:
+                    table[i][2] = 1
+            table = sorted(table, key=lambda l: l[1], reverse=True)
+            headers = ["Team", "Points", "Milestone"] + \
+                list(range(1, len(problems) + 1))
+
+            turbo.push(turbo.replace(render_template('table.html', n=len(
+                headers), headers=headers, m=len(teams), table=table), 'table1'))
+
+            # from tabulate import tabulate
+            # print(tabulate(table, headers=headers))
+
+            time.sleep(5)
 
 
 if __name__ == '__main__':
-    x = threading.Thread(target=updateData)
-    x.start()
+    threading.Thread(target=updateData).start()
     app.run(host='0.0.0.0', port=80)
