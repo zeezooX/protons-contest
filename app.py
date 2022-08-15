@@ -80,10 +80,18 @@ def upload():
 
 
 def updateData():
+    stamps = [0.0, 0.0, 0.0]
     with app.app_context():
         while True:
             global teams, problems, timeline, table, headers
 
+            new_stamps = [os.stat("data/teams.txt").st_mtime, os.stat(
+                "data/problems.txt").st_mtime, os.stat("data/timeline.txt").st_mtime]
+            if new_stamps == stamps:
+                time.sleep(5)
+                continue
+            stamps = new_stamps
+            
             teams = open("data/teams.txt", "r").read().splitlines()
             problems = open("data/problems.txt", "r").read().splitlines()
             timeline = open("data/timeline.txt", "r").read().splitlines()
