@@ -54,6 +54,10 @@ def upload():
         problem = request.form.get("problem")
         filename = secure_filename(uploaded_file.filename)
 
+        if timeline[0] == "yet":
+            flash("❌ Contest Hasn\'t Started")
+            return redirect(url_for('upload'))
+
         if filename == '':
             flash("❌ No File Selected")
             return redirect(url_for('upload'))
