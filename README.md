@@ -1,2 +1,4 @@
-# protons-contest
-```flask run --host=0.0.0.0 --port=80```
+# Protons Contest System
+Do not ```flask run```, use ```python app.py``` instead.
+Required modules:
+[Turbo-Flask](https://pypi.org/project/Turbo-Flask/)
