@@ -1,20 +1,70 @@
-<table id="table1" class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      {%for i in range(0, n)%}
-      <th scope="col">{{headers[i]}}</th>
-      {%endfor%}
-    </tr>
-  </thead>
-  <tbody>
-    {%for i in range(0, m)%}
-    <tr>
-      <th scope="row">{{i + 1}}</th>
-      {%for j in range(0, n)%}
-      <td>{{table[i][j]}}</td>
-      {%endfor%}
-    </tr>
-    {%endfor%}
-  </tbody>
-</table>
+<div id="table1">
+  {% if start == "yet" %}
+  <p
+    style="
+      text-align: center;
+      font-size: 72px;
+      background-color: white;
+      width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    "
+  >
+    <b>Contest Hasn't Started</b>
+  </p>
+  {% else %}
+  <p
+    style="
+      text-align: center;
+      font-size: 72px;
+      background-color: white;
+      width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    "
+    id="countdown"
+  >
+    <b><br /></b>
+  </p>
+  {% endif %}
+  <div class="table-responsive">
+    <table
+      class="table table-hover table-bordered"
+      style="
+        background-color: white;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      <thead>
+        <tr>
+          <th style="text-align: center" scope="col">#</th>
+          {%for i in range(0, n)%}
+          <th style="text-align: center" scope="col">{{headers[i]}}</th>
+          {%endfor%}
+        </tr>
+      </thead>
+      <tbody>
+        {%for i in range(0, m)%}
+        <tr>
+          <th style="text-align: center" scope="row">{{i + 1}}</th>
+          {%for j in range(0, n)%} {% if table[i][j] == "Y" %}
+          <td style="text-align: center" class="table-info">
+            <i class="bi-check-square-fill"></i>
+          </td>
+          {% elif table[i][j] == "P" %}
+          <td style="text-align: center" class="table-warning">
+            <i class="bi-hourglass-split"></i>
+          </td>
+          {% elif table[i][j] == "N" %}
+          <td style="text-align: center"><i class="bi-x-square"></i></td>
+          {% else %}
+          <td style="text-align: center">{{table[i][j]}}</td>
+          {% endif %} {%endfor%}
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>

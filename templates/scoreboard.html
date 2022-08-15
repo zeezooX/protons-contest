@@ -8,18 +8,116 @@
       )
     );
   </script>
+  <script>
+    var str = "{{time}}";
+
+    var x = setInterval(function () {
+      var countDownDate = new Date(str).getTime();
+
+      var now = new Date().getTime();
+
+      var distance = countDownDate - now;
+
+      var hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerHTML =
+        "<b>" + hours + "h " + minutes + "m " + seconds + "s </b>";
+
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "Contest Has Ended";
+      }
+    }, 1);
+  </script>
 </head>
-<div
-  style="
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    width: 75%;
-  "
->
+<div>
   {% include "table.html" %}
+  <div
+    style="
+      display: flex;
+      background-color: white;
+      width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    "
+  >
+    <div style="flex: 300px; width: 300px">
+      <table style="margin-left: auto; margin-right: auto; width: 225px">
+        <tr>
+          <td>Easy:</td>
+          <td>5 Points</td>
+        </tr>
+        <tr>
+          <td>Medium:</td>
+          <td>10 Points</td>
+        </tr>
+        <tr>
+          <td>Hard:</td>
+          <td>20 Points</td>
+        </tr>
+      </table>
+    </div>
+    <div style="flex: 300px; width: 300px">
+      <table style="margin-left: auto; margin-right: auto;">
+        <tr>
+          <th>Milestones</th>
+        </tr>
+        <tr>
+          <td>First:</td>
+          <td>15 Points</td>
+        </tr>
+        <tr>
+          <td>Second:</td>
+          <td>30 Points</td>
+        </tr>
+        <tr>
+          <td>Third:</td>
+          <td>50 Points</td>
+        </tr>
+        <tr>
+          <td>Fourth:</td>
+          <td>75 Points</td>
+        </tr>
+        <tr>
+          <td>Fifth:</td>
+          <td>Most Points</td>
+        </tr>
+      </table>
+    </div>
+    <div style="flex: 300px; width: 300px">
+      <table style="margin-left: auto; margin-right: auto; width: 225px">
+        <tr>
+          <td><i class="bi-x-square"></i></td>
+          <td>No or Wrong Solution</td>
+        </tr>
+        <tr>
+          <td><i class="bi-check-square-fill"></i></td>
+          <td>Correct Solution</td>
+        </tr>
+        <tr>
+          <td><i class="bi-hourglass-split"></i></td>
+          <td>Pending Solution</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <br>
+  <div
+    style="
+      text-align: center;
+      background-color: white;
+      width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    "
+  >
+    <p>To submit your solutions, open</p>
+    <h1>{{ip}}</h1>
+    <p>in your browser.</p>
+  </div>
 </div>
 {% endblock %}
