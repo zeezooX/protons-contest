@@ -76,7 +76,7 @@ def upload():
             return redirect(url_for('upload'))
 
         uploaded_file.save(os.path.join(
-            'submissions', f"{len(os.listdir('submissions'))}_{teams[int(team)]}_{problems[int(problem)]}.py"))
+            'submissions', f"{int(os.listdir('submissions')[-1][0]) + 1}_{teams[int(team)]}_{problems[int(problem)]}.py"))
         flash("✅ Solution Submitted Successfully")
         return redirect(url_for('upload'))
 
@@ -85,16 +85,19 @@ def upload():
 
 def updateData():
     stamps = [0.0, 0.0, 0.0]
+    submissions = []
     with app.app_context():
         while True:
             global teams, problems, timeline, table, headers
 
+            new_submissions = os.listdir("submissions")
             new_stamps = [os.stat("data/teams.txt").st_mtime, os.stat(
                 "data/problems.txt").st_mtime, os.stat("data/timeline.txt").st_mtime]
-            if new_stamps == stamps:
+            if new_stamps == stamps and submissions == new_submissions:
                 time.sleep(5)
                 continue
             stamps = new_stamps
+            submissions = new_submissions
             
             teams = open("data/teams.txt", "r").read().splitlines()
             problems = open("data/problems.txt", "r").read().splitlines()
@@ -114,7 +117,7 @@ def updateData():
                     table[teams.index(f_event[1])][1] += 10
                 else:
                     table[teams.index(f_event[1])][1] += 5
-            for filename in os.listdir("submissions"):
+            for filename in submissions:
                 f_filename = filename[:-3].split("_")
                 if len(f_filename) != 3:
                     continue
@@ -136,6 +139,12 @@ def updateData():
             table = sorted(table, key=lambda l: l[1], reverse=True)
             headers = ["Team", "Points", "Milestone"] + \
                 list(range(1, len(problems) + 1))
+
+            for i in range(len(teams)):
+                j = i
+                while j and table[i][1] == table[j - 1][1]:
+                    j -= 1
+                table[i].append(j + 1)
 
             turbo.push(turbo.replace(render_template('table.html', n=len(
                 headers), headers=headers, m=len(teams), table=table, start=timeline[0]), 'table1'))

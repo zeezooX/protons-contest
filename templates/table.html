@@ -8,6 +8,7 @@
       width: 900px;
       margin-left: auto;
       margin-right: auto;
+      user-select: none;
     "
   >
     <b>Contest Hasn't Started</b>
@@ -21,6 +22,7 @@
       width: 600px;
       margin-left: auto;
       margin-right: auto;
+      user-select: none;
     "
     id="countdown"
   >
@@ -48,7 +50,7 @@
       <tbody>
         {%for i in range(0, m)%}
         <tr>
-          <th style="text-align: center" scope="row">{{i + 1}}</th>
+          <th style="text-align: center" scope="row">{{table[i][-1]}}</th>
           {%for j in range(0, n)%} {% if table[i][j] == "Y" %}
           <td style="text-align: center" class="table-info">
             <i class="bi-check-square-fill"></i>

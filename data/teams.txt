@@ -5,4 +5,4 @@ Team D
 Team E
 Team F
 Team G
-Team F
+Team H
