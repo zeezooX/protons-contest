@@ -36,7 +36,7 @@ def too_large(e):
 @app.route('/pset.pdf', methods=['GET', 'POST'])
 def pset():
     if timeline[0] != "yet":
-        return send_file('static/pset.pdf', attachment_filename='pset.pdf')
+        return send_file('pset/pset.pdf', attachment_filename='pset.pdf')
     return '<h1 style="font-family: sans-serif"><b>❌ Contest Hasn\'t Started</b></h1>'
 
 
@@ -107,8 +107,12 @@ def updateData():
 
             for event in timeline:
                 f_event = event.split("_")
+
                 if len(f_event) != 3:
+                    if len(f_event) == 2 and f_event[0] in teams:
+                        table[teams.index(f_event[0])][1] += int(f_event[1])
                     continue
+
                 table[teams.index(f_event[1])][3 +
                                                problems.index(f_event[2])] = "Y"
                 if f_event[2].find("(Hard)") != -1:
@@ -117,6 +121,7 @@ def updateData():
                     table[teams.index(f_event[1])][1] += 10
                 else:
                     table[teams.index(f_event[1])][1] += 5
+
             for filename in submissions:
                 f_filename = filename[:-3].split("_")
                 if len(f_filename) != 3:
@@ -124,6 +129,7 @@ def updateData():
                 if table[teams.index(f_filename[1])][3 + problems.index(f_filename[2])] != "Y":
                     table[teams.index(f_filename[1])][3 +
                                                       problems.index(f_filename[2])] = "P"
+
             for i in range(len(teams)):
                 table[i][0] = teams[i]
                 if table[i][1] >= 75:
@@ -136,6 +142,7 @@ def updateData():
                     table[i][2] = "First"
                 else:
                     table[i][2] = "Zero"
+
             table = sorted(table, key=lambda l: l[1], reverse=True)
             headers = ["Team", "Points", "Milestone"] + \
                 list(range(1, len(problems) + 1))
