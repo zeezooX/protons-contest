@@ -36,7 +36,7 @@ def too_large(e):
 @app.route('/pset.pdf', methods=['GET', 'POST'])
 def pset():
     if timeline[0] != "yet":
-        return send_file('pset/pset.pdf', attachment_filename='pset.pdf')
+        return send_file('pset/pset.pdf', download_name ='pset.pdf')
     return '<h1 style="font-family: sans-serif"><b>❌ Contest Hasn\'t Started</b></h1>'
 
 
@@ -98,7 +98,7 @@ def updateData():
                 continue
             stamps = new_stamps
             submissions = new_submissions
-            
+
             teams = open("data/teams.txt", "r").read().splitlines()
             problems = open("data/problems.txt", "r").read().splitlines()
             timeline = open("data/timeline.txt", "r").read().splitlines()
