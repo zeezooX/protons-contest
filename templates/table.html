@@ -61,6 +61,9 @@
           </td>
           {% elif table[i][j] == "N" %}
           <td style="text-align: center"><i class="bi-x-square"></i></td>
+          {% elif table[i][j] == "W" %}
+          <td style="text-align: center" class="table-danger">
+            <i class="bi-x-square"></i></td>
           {% else %}
           <td style="text-align: center">{{table[i][j]}}</td>
           {% endif %} {%endfor%}

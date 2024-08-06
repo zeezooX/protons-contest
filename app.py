@@ -160,6 +160,12 @@ def updateData():
                     queue.append(event)
                     continue
 
+                if f_event[2].endswith("="):
+                    f_event[2] = (f_event[2])[:-1]
+                    table[teams.index(f_event[1])][3 +
+                                                   problems.index(f_event[2])] = "W"
+                    continue
+
                 table[teams.index(f_event[1])][3 +
                                                problems.index(f_event[2])] = "Y"
                 if f_event[2].find("(Hard)") != -1:
