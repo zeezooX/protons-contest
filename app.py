@@ -145,6 +145,8 @@ def updateData():
                 if event == "=":
                     if not queue:
                         continue
+                    queue = sorted(
+                        queue, key=lambda x: table[teams.index(x.split("_")[1])][1])
                     f_event = queue.pop(0).split("_")
                 else:
                     f_event = event.split("_")
