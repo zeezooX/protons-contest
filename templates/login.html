@@ -48,7 +48,7 @@
   <h1 style="background-color: white">
     <b>The <i>PROTOLYMPICS</i></b>
   </h1>
-  <form action="/" method="POST" enctype="multipart/form-data">
+  <form action="/login" method="POST" enctype="multipart/form-data">
     <a
       class="btn btn-warning"
       href="pset.pdf"
@@ -74,50 +74,30 @@
       name="team"
       id="team"
       autocomplete="off"
-      disabled="true"
-      style="position: absolute; right: 45px; width: 155px"
-    >
-      {%for i in range(0, n)%} {% if i == team %}
-      <option value="{{i}}" selected>{{teams[i]}}</option>
-      {% else %}
-      <option value="{{i}}">{{teams[i]}}</option>
-      {% endif %} {%endfor%}
-    </select>
-    <a
-      class="btn btn-danger"
-      href="login"
-      role="button"
-      style="position: absolute; right: 0px; width: 40px"
-      ><i class="bi-x-square"></i
-    ></a>
-
-    <br />
-
-    <label for="problem">Problem: </label>
-    <select
-      class="form-select"
-      name="problem"
-      id="problem"
-      autocomplete="off"
+      required
       style="position: absolute; right: 0px; width: 200px"
     >
-      <option value="" selected hidden>Select Problem</option>
-      {%for i in range(0, m)%}
-      <option value="{{i}}">{{problems[i]}}</option>
+      <option value="" selected hidden>Select Team</option>
+      {%for i in range(0, n)%}
+      <option value="{{i}}">{{teams[i]}}</option>
       {%endfor%}
     </select>
 
     <br />
 
-    <label for="file">Solution: </label>
+    <label for="password" style="margin-top: 10px">Password: </label>
     <input
+      type="password"
       class="form-control"
-      type="file"
-      name="file"
-      id="file"
-      accept=".py"
+      name="password"
+      id="password"
+      autocomplete="off"
+      required
+      placeholder="Enter Password"
+      style="display: inline-block; width: 200px; float: right; margin-top: 5px"
     />
 
+    <br />
     <br />
     <button type="reset" class="btn btn-warning" style="width: 150px">
       <i class="bi-arrow-repeat"></i> Reset
@@ -125,10 +105,10 @@
     <button
       type="submit"
       class="btn btn-info"
-      value="Submit"
+      value="Login"
       style="position: absolute; right: 0px; width: 200px"
     >
-      Submit <i class="bi-upload"></i>
+      Login <i class="bi-box-arrow-in-right"></i>
     </button>
   </form>
 </div>

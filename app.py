@@ -15,6 +15,7 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.secret_key = "whatever lol"
 
 teams = []
+passwords = []
 problems = []
 timeline = []
 headers = []
@@ -36,7 +37,7 @@ def too_large(e):
 @app.route('/pset.pdf', methods=['GET', 'POST'])
 def pset():
     if timeline[0] != "yet":
-        return send_file('pset/pset.pdf', download_name ='pset.pdf')
+        return send_file('pset/pset.pdf', download_name='pset.pdf')
     return '<h1 style="font-family: sans-serif"><b>❌ Contest Hasn\'t Started</b></h1>'
 
 
@@ -48,11 +49,16 @@ def scoreboard():
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
+    team = request.cookies.get('team')
+
     if request.method == 'POST':
         uploaded_file = request.files['file']
-        team = request.form.get("team")
         problem = request.form.get("problem")
         filename = secure_filename(uploaded_file.filename)
+
+        if team is None or int(team) >= len(teams) or passwords[int(team)] != request.cookies.get('password'):
+            flash("❌ Invalid Credentials")
+            return redirect(url_for('login'))
 
         if timeline[0] == "yet":
             flash("❌ Contest Hasn\'t Started")
@@ -80,7 +86,23 @@ def upload():
         flash("✅ Solution Submitted Successfully")
         return redirect(url_for('upload'))
 
-    return render_template("upload.html", n=len(teams), teams=teams, m=len(problems), problems=problems)
+    if team is None:
+        return redirect(url_for('login'))
+
+    return render_template("upload.html", n=len(teams), teams=teams, m=len(problems), problems=problems, team=int(team))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        if request.form.get("password") != passwords[int(request.form.get("team"))]:
+            flash("❌ Incorrect Password")
+            return redirect(url_for('login'))
+        resp = redirect(url_for('upload'))
+        resp.set_cookie('team', request.form.get("team"))
+        resp.set_cookie('password', request.form.get("password"))
+        return resp
+    return render_template("login.html", n=len(teams), teams=teams)
 
 
 def updateData():
@@ -88,7 +110,7 @@ def updateData():
     submissions = []
     with app.app_context():
         while True:
-            global teams, problems, timeline, table, headers
+            global teams, passwords, problems, timeline, table, headers
 
             new_submissions = os.listdir("submissions")
             new_stamps = [os.stat("data/teams.txt").st_mtime, os.stat(
@@ -99,7 +121,10 @@ def updateData():
             stamps = new_stamps
             submissions = new_submissions
 
-            teams = open("data/teams.txt", "r").read().splitlines()
+            teams = [line.split('_')[0] for line in open(
+                "data/teams.txt", "r").read().splitlines()]
+            passwords = [line.split('_')[1] for line in open(
+                "data/teams.txt", "r").read().splitlines()]
             problems = open("data/problems.txt", "r").read().splitlines()
             timeline = open("data/timeline.txt", "r").read().splitlines()
             table = [([0 for i in range(3)] + ["N" for i in range(len(problems))])
@@ -156,7 +181,7 @@ def updateData():
             turbo.push(turbo.replace(render_template('table.html', n=len(
                 headers), headers=headers, m=len(teams), table=table, start=timeline[0]), 'table1'))
 
-            time.sleep(5)
+            time.sleep(1)
 
 
 if __name__ == '__main__':
