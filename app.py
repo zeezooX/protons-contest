@@ -7,12 +7,17 @@ import mimetypes
 from turbo_flask import Turbo
 import socket
 
+
 mimetypes.add_type('application/javascript', '.js')
 
 app = Flask(__name__)
 turbo = Turbo(app)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.secret_key = "whatever lol"
+
+TEAMS_FILE = "data/teams.txt"
+PROBLEMS_FILE = "data/problems.txt"
+TIMELINE_FILE = "data/timeline.txt"
 
 teams = []
 passwords = []
@@ -113,29 +118,44 @@ def updateData():
             global teams, passwords, problems, timeline, table, headers
 
             new_submissions = os.listdir("submissions")
-            new_stamps = [os.stat("data/teams.txt").st_mtime, os.stat(
-                "data/problems.txt").st_mtime, os.stat("data/timeline.txt").st_mtime]
+            new_stamps = [os.stat(TEAMS_FILE).st_mtime, os.stat(
+                PROBLEMS_FILE).st_mtime, os.stat(TIMELINE_FILE).st_mtime]
             if new_stamps == stamps and submissions == new_submissions:
-                time.sleep(5)
+                time.sleep(1)
                 continue
             stamps = new_stamps
             submissions = new_submissions
 
             teams = [line.split('_')[0] for line in open(
-                "data/teams.txt", "r").read().splitlines()]
+                TEAMS_FILE, "r").read().splitlines()]
             passwords = [line.split('_')[1] for line in open(
-                "data/teams.txt", "r").read().splitlines()]
-            problems = open("data/problems.txt", "r").read().splitlines()
-            timeline = open("data/timeline.txt", "r").read().splitlines()
+                TEAMS_FILE, "r").read().splitlines()]
+            problems = open(PROBLEMS_FILE, "r").read().splitlines()
+            timeline = open(TIMELINE_FILE, "r").read().splitlines()
             table = [([0 for i in range(3)] + ["N" for i in range(len(problems))])
                      for j in range(len(teams))]
 
+            queue = []
+            blind = False
             for event in timeline:
-                f_event = event.split("_")
+                if event == "blind":
+                    blind = True
+                    continue
+
+                if event == "=":
+                    if not queue:
+                        continue
+                    f_event = queue.pop(0).split("_")
+                else:
+                    f_event = event.split("_")
 
                 if len(f_event) != 3:
                     if len(f_event) == 2 and f_event[0] in teams:
                         table[teams.index(f_event[0])][1] += int(f_event[1])
+                    continue
+
+                if blind and event != "=":
+                    queue.append(event)
                     continue
 
                 table[teams.index(f_event[1])][3 +
