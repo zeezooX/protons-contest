@@ -88,7 +88,7 @@ def upload():
 
         uploaded_file.save(os.path.join(
             'submissions', f"{int(os.listdir('submissions')[-1][0]) + 1}_{teams[int(team)]}_{problems[int(problem)]}.py"))
-        flash("✅ Solution Submitted Successfully")
+        flash("⌛ Solution Submitted Successfully")
         return redirect(url_for('upload'))
 
     if team is None:
@@ -113,6 +113,7 @@ def login():
 def updateData():
     stamps = [0.0, 0.0, 0.0]
     submissions = []
+    verdicts = {0}
     with app.app_context():
         while True:
             global teams, passwords, problems, timeline, table, headers
@@ -132,8 +133,8 @@ def updateData():
                 TEAMS_FILE, "r").read().splitlines()]
             problems = open(PROBLEMS_FILE, "r").read().splitlines()
             timeline = open(TIMELINE_FILE, "r").read().splitlines()
-            table = [([0 for i in range(3)] + ["N" for i in range(len(problems))])
-                     for j in range(len(teams))]
+            table = [([0 for _ in range(3)] + ["N" for _ in range(len(problems))])
+                     for __ in range(len(teams))]
 
             queue = []
             blind = False
@@ -164,10 +165,16 @@ def updateData():
                     f_event[2] = (f_event[2])[:-1]
                     table[teams.index(f_event[1])][3 +
                                                    problems.index(f_event[2])] = "W"
+                    if int(f_event[0]) not in verdicts:
+                        verdicts.add(int(f_event[0]))
+                        turbo.push(turbo.append(render_template('message.html', mess=f'❌ You Failed "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
                     continue
 
                 table[teams.index(f_event[1])][3 +
                                                problems.index(f_event[2])] = "Y"
+                if int(f_event[0]) not in verdicts:
+                    verdicts.add(int(f_event[0]))
+                    turbo.push(turbo.append(render_template('message.html', mess=f'✅ You Solved "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
                 if f_event[2].find("(Hard)") != -1:
                     table[teams.index(f_event[1])][1] += 20
                 elif f_event[2].find("(Medium)") != -1:
@@ -179,7 +186,8 @@ def updateData():
                 f_filename = filename[:-3].split("_")
                 if len(f_filename) != 3:
                     continue
-                if table[teams.index(f_filename[1])][3 + problems.index(f_filename[2])] != "Y":
+                if int(f_filename[0]) not in verdicts and table[teams.index(f_filename[1])][3 +
+                                                                                            problems.index(f_filename[2])] != "Y":
                     table[teams.index(f_filename[1])][3 +
                                                       problems.index(f_filename[2])] = "P"
 
@@ -210,6 +218,11 @@ def updateData():
                 headers), headers=headers, m=len(teams), table=table, start=timeline[0]), 'table1'))
 
             time.sleep(1)
+
+
+@turbo.user_id
+def get_user_id():
+    return int(request.cookies.get("team"))
 
 
 if __name__ == '__main__':
