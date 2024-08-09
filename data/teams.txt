@@ -1,10 +1,11 @@
-Team A_p@$$w0rd0
-Team B_p@$$w0rd1
-Team C_p@$$w0rd2
-Team D_p@$$w0rd3
-Team E_p@$$w0rd4
-Team F_p@$$w0rd5
-Team G_p@$$w0rd6
-Team H_p@$$w0rd7
-Team I_p@$$w0rd8
-Team J_p@$$w0rd9
+Team A_BlueSky1
+Team B_Sunset22
+Team C_Green4Me
+Team D_Happy7Day
+Team E_QuickFox3
+Team F_Star9Fish
+Team G_BoldRed5
+Team H_Rainy8Day
+Team I_Lucky4You
+Team J_Bright6Sun
+Admin_p@$$w0rd
