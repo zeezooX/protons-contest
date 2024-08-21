@@ -86,8 +86,10 @@ def upload():
             flash("❌ File Type Not Python")
             return redirect(url_for('upload'))
 
+#        uploaded_file.save(os.path.join(
+#            'submissions', f"{int(os.listdir('submissions')[-1][0]) + 1}_{teams[int(team)]}_{problems[int(problem)]}.py"))
         uploaded_file.save(os.path.join(
-            'submissions', f"{int(os.listdir('submissions')[-1][0]) + 1}_{teams[int(team)]}_{problems[int(problem)]}.py"))
+            'submissions', f"{len(os.listdir('submissions'))}_{teams[int(team)]}_{problems[int(problem)]}.py"))
         flash("⌛ Solution Submitted Successfully")
         return redirect(url_for('upload'))
 
@@ -167,14 +169,20 @@ def updateData():
                                                    problems.index(f_event[2])] = "W"
                     if int(f_event[0]) not in verdicts:
                         verdicts.add(int(f_event[0]))
-                        turbo.push(turbo.append(render_template('message.html', mess=f'❌ You Failed "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
+                        try:
+                            turbo.push(turbo.append(render_template('message.html', mess=f'❌ You Failed "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
+                        except:
+                            pass
                     continue
 
                 table[teams.index(f_event[1])][3 +
                                                problems.index(f_event[2])] = "Y"
                 if int(f_event[0]) not in verdicts:
                     verdicts.add(int(f_event[0]))
-                    turbo.push(turbo.append(render_template('message.html', mess=f'✅ You Solved "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
+                    try:
+                        turbo.push(turbo.append(render_template('message.html', mess=f'✅ You Solved "{f_event[2]}"'), 'messages'), to=teams.index(f_event[1]))
+                    except:
+                        pass
                 if f_event[2].find("(Hard)") != -1:
                     table[teams.index(f_event[1])][1] += 20
                 elif f_event[2].find("(Medium)") != -1:
